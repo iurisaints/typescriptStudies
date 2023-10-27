@@ -185,6 +185,39 @@ export class SistemaBiblioteca implements Biblioteca{
 
     }
 
+    deleteUsuario(): void{
+        this.usuarios.forEach(user =>{
+            console.log(`Identificador: [${user.idUsuario}] - Nome: ${user.nome}`);
+        })
+
+        let iduser: number = leitor.questionInt("Insira o ID do usuário: ")
+
+        let findUsuario: number = this.usuarios.findIndex(u => u.idUsuario === iduser)
+
+        if (findUsuario) {
+            this.usuarios.splice(findUsuario, 1)
+        } else {
+            console.log(`Usuário não encontrado!`);
+        }
+    }
+
+    deleteLivros(): void{
+
+        this.livros.forEach(book =>{
+            console.log(`Identificador: [${book.idLivro} - Título: ${book.titulo}]`);
+        })
+
+        let idbook: number = leitor.questionInt("Insira o ID do livro: ")
+
+        let findLivro: number = this.livros.findIndex(l => l.idLivro === idbook)
+
+        if (findLivro) {
+            this.livros.splice(findLivro, 1)
+        }else {
+            console.log(`Livro não encontrado!`);
+        }
+    }
+
     baseDadosLivros(){
         let livroum     = new Livro(1, "Dom Quixote", "Miguel de Cervantes", 1605, 5)
         let livrodois   = new Livro(2, "Em Busca do Tempo Perdido", "Marcel Proust", 1913, 7)
