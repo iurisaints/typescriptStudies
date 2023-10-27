@@ -1,4 +1,4 @@
-import { SistemaBiblioteca } from "./biblioteca";
+import { SistemaBiblioteca } from "./teste";
 import * as leitor from "readline-sync"
 
 let biblioteca = new SistemaBiblioteca()
@@ -6,13 +6,17 @@ biblioteca.baseDadosLivros()
 biblioteca.baseDadosUsuarios()
 
 while(true){
+
     console.log(`Seja bem-vindo ao sistema de biblioteca!`);
     console.log(`1 - Cadastrar Livro`);
     console.log(`2 - Cadastrar Usuário`);
     console.log(`3 - Emprestar Livro`);
     console.log(`4 - Devolver Livro`);
     console.log(`5 - Livros Disponíveis`);
-    console.log(`6 - Sair`);
+    console.log(`6 - Deletar Usuário`);
+    console.log(`7 - Deletar Livros`);
+    console.log(`0 - Sair`);
+    
     
     let opcao = leitor.questionInt(`Informe a opção desejada: `)
 
@@ -33,6 +37,12 @@ while(true){
             biblioteca.consultarLivrosDisponiveis()
             break;
         case 6:
+            biblioteca.deleteUsuario()
+            break;
+        case 7:
+            biblioteca.deleteLivros()
+            break;
+        case 0:
             console.log(`Saindo, volte sempre.`);
             process.exit(0);
         default:
