@@ -1,0 +1,19 @@
+{
+  "name": "bancosql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "mariadb": "^3.2.2",
+    "readline-sync": "^1.4.10"
+  },
+  "devDependencies": {
+    "@types/readline-sync": "^1.4.6"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx tsc && node ./build/index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
