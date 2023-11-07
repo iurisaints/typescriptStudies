@@ -114,15 +114,15 @@ export class SistemaBiblioteca /*implements Biblioteca*/{
         
         let idEmprestimo: number = leitor.questionInt("Insira o ID do emprestimo: ")
         
-        this.encontrarLivro(idEmprestimo)
+        let idLivro = this.encontrarLivro(idEmprestimo)
 
-        this.devolverBanco(idEmprestimo)
+        this.devolverBanco(idEmprestimo, idLivro)
     }
 
-    async devolverBanco(idEmprestimo: number): Promise<void> {
+    async devolverBanco(idEmprestimo: number, idLivro: any): Promise<void> {
         try {
           await executeDatabaseQuery(`DELETE FROM sistemabiblioteca WHERE id_biblioteca = ?;`, [idEmprestimo]);
-          await executeDatabaseQuery(`UPDATE livros SET quantidadeDisponivel = quantidadeDisponivel - 1 WHERE id_livro = ? `,[livro])
+          await executeDatabaseQuery(`UPDATE livros SET quantidadeDisponivel = quantidadeDisponivel - 1 WHERE id_livro = ?;`,[idLivro])
           console.log(`\nLivro devolvido com sucesso!\n`);
         } catch (err) {
           console.log('Erro', err);
@@ -146,7 +146,6 @@ export class SistemaBiblioteca /*implements Biblioteca*/{
       async livrosBanco(): Promise<void> {
         try {
           const livros = await executeDatabaseQuery("SELECT * FROM livros", []);
-    
           console.log(`Base de dados dos Livros:`);
           livros.forEach(({ id_livro, titulo, autor }: any) => {
             console.log(`Id: ${id_livro}, Titulo: ${titulo}, Autor: ${autor}`);
@@ -171,89 +170,49 @@ export class SistemaBiblioteca /*implements Biblioteca*/{
         }
       }
 
-      async encontrarLivro(idEmprestimo: number): Promise<void> {
+      async encontrarLivro(idEmprestimo: number): Promise<number> {
         try {
-            const livro = await executeDatabaseQuery("SELECT id_livro FROM sistemabiblioteca WHERE", []);
-      
+            const livro = await executeDatabaseQuery("SELECT id_livro FROM sistemabiblioteca WHERE id_biblioteca = ?", [idEmprestimo]);
+            return livro
           } catch (err) {
             console.error('Erro:', err);
+            return -1
           }
       }
 
-/*
-    consultarLivrosDisponiveis(): void {
-
-        this.livros.forEach(books => {
-            console.log(`Livro: ${books.titulo}`);
-            console.log(`Autor: ${books.autor}`);
-            console.log(`Ano de Publicação: ${books.anoPublicacao}`);
-            console.log(`Quantidade disponível: ${books.quantidadeDisponivel}\n`);
-        })
-
-    }
-
-    deleteUsuario(): void{
-        this.usuarios.forEach(user =>{
-            console.log(`Identificador: [${user.idUsuario}] - Nome: ${user.nome}`);
-        })
-
-        let iduser: number = leitor.questionInt("Insira o ID do usuário: ")
-
-        let findUsuario: number = this.usuarios.findIndex(u => u.idUsuario === iduser)
-
-        if (findUsuario) {
-            this.usuarios.splice(findUsuario, 1)
-        } else {
-            console.log(`Usuário não encontrado!`);
+      async deletarUsuario(): Promise<void> {
+        
+        const listaUsuarios = await this.usuariosBanco()
+        console.log(listaUsuarios);
+        let idUsuario: number = leitor.questionInt("Insira o ID do usuário a ser deletado: ")
+      
+        try {
+          await executeDatabaseQuery("DELETE FROM usuarios WHERE id_usuario = ?", [idUsuario])
+          console.log("Usuario deletado com sucesso!");
+        } catch (err) {
+          console.error('Erro: ', err)
         }
-    }
+      }
 
-    deleteLivros(): void{
+      async visualizarLivros(): Promise<void> {
+        const listaLivros = await this.livrosBanco()
+        console.log(listaLivros);
+      }
 
-        this.livros.forEach(book =>{
-            console.log(`Identificador: [${book.idLivro} - Título: ${book.titulo}]`);
-        })
-
-        let idbook: number = leitor.questionInt("Insira o ID do livro: ")
-
-        let findLivro: number = this.livros.findIndex(l => l.idLivro === idbook)
-
-        if (findLivro) {
-            this.livros.splice(findLivro, 1)
-        }else {
-            console.log(`Livro não encontrado!`);
+      async deletarLivro(): Promise<void> {
+        
+        const listaLivros = await this.livrosBanco()
+        console.log(listaLivros);
+        let idLivro: number = leitor.questionInt("Insira o ID do livro a ser deletado: ")
+      
+        try {
+          await executeDatabaseQuery("DELETE FROM livros WHERE id_livro = ?", [idLivro])
+          console.log("Livro deletado com sucesso!");
+        } catch (err) {
+          console.error('Erro: ', err)
         }
-    }
+      }
 
-    baseDadosLivros(){
-        let livroum     = new Livro(1, "Dom Quixote", "Miguel de Cervantes", 1605, 5)
-        let livrodois   = new Livro(2, "Em Busca do Tempo Perdido", "Marcel Proust", 1913, 7)
-        let livrotres   = new Livro(3, "Crime e Castigo", "Fiódor Dostoiévski", 1866, 3)
-        let livroquatro = new Livro(4, "Cem Anos de Solidão", "Gabriel García Márquez", 1967, 8)
-        let livrocinco  = new Livro(5, "Orgulho e Preconceito", "Jane Austen", 1813, 10)
-        let livroseis   = new Livro(6, "1984", "George Orwell", 1949, 2)
-        let livrosete   = new Livro(7, "O Grande Gatsby", "F. Scott Fitzgerald", 1925, 6)
-        let livrooito   = new Livro(8, "Ulisses", "James Joyce", 1922, 4)
-        let livronove   = new Livro(9, "Apanhador no Campo de Centeio", "J.D. Salinger", 1951, 9)
-        let livrodez    = new Livro(10, "A Metamorfose", "Franz Kafka", 1915, 1)
-        this.livros.push(livroum, livrodois, livrotres, livroquatro, livrocinco, livroseis, livrosete, livrooito, livronove, livrodez)
-    }
-
-    baseDadosUsuarios(){
-            let userum     = new Usuario(1, "João Silva", "joao@gmail.com")
-            let userdois   = new Usuario(2, "Maria Santos", "maria@gmail.com")
-            let usertres   = new Usuario(3, "José Pereira", "jose@gmail.com")
-            let userquatro = new Usuario(4, "Ana Júlia", "ana@gmail.com")
-            let usercinco  = new Usuario(5, "Paulo Lima", "paulo@gmail.com")
-            let userseis   = new Usuario(6, "Camila Ferreira", "camila@hotmail.com")
-            let usersete   = new Usuario(7, "Fernando Alves", "fernando@hotmail.com")
-            let useroito   = new Usuario(8, "Sofia Oliveira", "sofia@hotmail.com")
-            let usernove   = new Usuario(9, "Lucas Rodrigues", "lucas@hotmail.com")
-            let userdez    = new Usuario(10, "Mariana Pereira", "mariana@hotmail.com")
-            this.usuarios.push(userum, userdois, usertres, userquatro, usercinco, userseis, usersete, useroito, usernove, userdez)
-    }
-
-    */
 }
 
 async function executeDatabaseQuery(query: string, params: any[]): Promise<any> {
