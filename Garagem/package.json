@@ -1,15 +1,12 @@
 {
-  "name": "testessql",
+  "name": "garagem",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx tsc && node ./build/index.js"
+    "start":"npx tsc index && node index"
   },
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/readline-sync": "^1.4.7"
-  }
+  "license": "ISC"
 }

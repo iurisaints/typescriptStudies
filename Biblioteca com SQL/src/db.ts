@@ -1,13 +1,13 @@
 var mariadb = require("mariadb")
 
 const banco = mariadb.createPool({
-    host: "localhost",
-    user: "root",
-    password: "",
+    host: 'localhost',
+    user: 'root',
+    password: '',
     port: 5000,
-    database: "biblioteca",
+    database: 'biblioteca',
     waitForConnections: true,
-    connectionLimit: 10,
+    connectionLimit: 10
 })
 
 export default banco;
@@ -39,7 +39,7 @@ banco.execute(`
         id_biblioteca INT AUTO_INCREMENT PRIMARY KEY,
         id_usuario INT NOT NULL,
         id_livro INT NOT NULL,
-        FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+        FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
         FOREIGN KEY (id_livro) REFERENCES livros(id_livro)
     );   
 `)
